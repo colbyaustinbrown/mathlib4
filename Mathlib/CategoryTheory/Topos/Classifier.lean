@@ -155,7 +155,15 @@ abbrev Ω : C := HasClassifier.exists_classifier.some.Ω
 /-- Notation for the "truth arrow" in an arbitrary choice of a subobject classifier -/
 abbrev truth : Ω₀ C ⟶ Ω C := HasClassifier.exists_classifier.some.truth
 
+/-- An arbitrary choice of a classifier is terminal.
+Prefer `c.χ₀` over `c.isTerminalΩ₀.from`. -/
+abbrev isTerminalΩ₀ (C : Type u) [Category C] [HasClassifier C] :
+    IsTerminal (Ω₀ C) := exists_classifier.some.isTerminalΩ₀
+
 variable {C} {U X : C} (m : U ⟶ X) [Mono m]
+
+/-- Notation for the top arrow in the defining pullback square -/
+def χ₀ (U : C) : U ⟶ Ω₀ C := HasClassifier.exists_classifier.some.χ₀ U
 
 /-- returns the characteristic morphism of the subobject `(m : U ⟶ X) [Mono m]` -/
 def χ : X ⟶ Ω C :=
@@ -194,6 +202,10 @@ is a pullback square.
 -/
 lemma unique (χ' : X ⟶ Ω C) (hχ' : IsPullback m (Classifier.χ₀ _ U) χ' (truth C)) : χ' = χ m :=
   Classifier.uniq _ m hχ'
+
+@[reassoc (attr := simp)]
+lemma comp_χ₀_eq_χ₀ {U : C} {f : U ⟶ X} :
+    f ≫ χ₀ X = χ₀ U := by subsingleton
 
 instance truthIsSplitMono : IsSplitMono (truth C) :=
   Classifier.isTerminalΩ₀.isSplitMono_from _

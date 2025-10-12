@@ -118,6 +118,20 @@ theorem existsUnique_prop {p q : Prop} : (∃! _ : p, q) ↔ p ∧ q := by simp
 theorem existsUnique_prop_of_true {p : Prop} {q : p → Prop} (h : p) : (∃! h' : p, q h') ↔ q h :=
   @existsUnique_const (q h) p ⟨h⟩ _
 
+theorem ExistsUnique.eq_choose_iff {p : α → Prop} (h : ∃! x : α, p x) {y : α} :
+    y = h.choose ↔ p y := by
+  refine ⟨?_, ?_⟩
+  · intro p'; exact p'.symm.subst h.choose_spec.left
+  · intro p
+    apply h.choose_spec.right y
+    assumption
+
+theorem ExistsUnique.choose_eq_iff {p : α → Prop} (h : ∃! x : α, p x) {y : α} :
+    h.choose = y ↔ p y := by
+  refine ⟨?_, ?_⟩
+  · intro p'; exact h.eq_choose_iff.mp p'.symm
+  · intro p'; exact (h.eq_choose_iff.mpr p').symm
+
 theorem ExistsUnique.elim₂ {p : α → Sort*} [∀ x, Subsingleton (p x)]
     {q : ∀ (x) (_ : p x), Prop} {b : Prop} (h₂ : ∃! x, ∃! h : p x, q x h)
     (h₁ : ∀ (x) (h : p x), q x h → (∀ (y) (hy : p y), q y hy → y = x) → b) : b := by
